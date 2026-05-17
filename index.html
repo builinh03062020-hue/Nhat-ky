@@ -7,28 +7,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
-        /* Cấu hình mặc định toàn cục */
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            font-family: 'Nunito', sans-serif; 
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Nunito', sans-serif; }
         
-        /* Giao diện nền vũ trụ */
+        /* Nền vũ trụ */
         body {
             background: #090514;
             background-image: radial-gradient(circle at top right, #1a0b2e, transparent 60%),
                               radial-gradient(circle at bottom left, #1a0b2e, transparent 60%);
-            color: #2a1c40; 
-            min-height: 100vh; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            overflow: hidden;
+            color: #2a1c40; min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden;
         }
 
-        /* Hiệu ứng hạt sao */
+        /* Hiệu ứng sao */
         .stars { position: absolute; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
         .star {
             position: absolute; 
@@ -44,44 +33,31 @@
             100% { transform: translateY(-10vh) scale(1); opacity: 0; }
         }
 
-        /* Khung bố cục chính: Thiết lập kích thước cố định tuyệt đối */
+        /* ---------------------------------------------------
+           BỐ CỤC CHÍNH: Cố định kích thước không xê dịch
+        --------------------------------------------------- */
         .container {
-            position: relative; 
-            z-index: 1; 
-            display: flex; 
-            gap: 30px;
-            width: 95%; 
-            max-width: 1200px; 
-            height: 85vh; /* Giữ nguyên chiều cao cố định */
+            position: relative; z-index: 1; display: flex; gap: 30px;
+            width: 95%; max-width: 1200px; height: 85vh; /* Giữ nguyên chiều cao */
             min-height: 600px;
         }
 
-        /* Khu vực bảng điều khiển: Vô hiệu hóa khả năng tràn nội dung */
+        /* KHUNG GIẤY */
         .box {
             background: rgba(235, 235, 240, 0.95);
-            border-radius: 25px; 
-            padding: 25px 35px;
+            border-radius: 25px; padding: 25px 35px;
             box-shadow: 0 15px 50px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,255,255,1);
-            display: flex; 
-            flex-direction: column; 
-            position: relative;
-            height: 100%; /* Chiếm 100% chiều cao của container */
-            overflow: hidden; /* Ngăn chặn nội dung tràn ra ngoài viền bảng */
+            display: flex; flex-direction: column; position: relative;
+            height: 100%; /* Chốt cứng chiều cao bằng container */
+            overflow: hidden; /* Tránh tràn layout */
         }
         
         .writer-section { flex: 1.2; } 
         
-        /* Định dạng tiêu đề */
         h1.cursive-title {
-            font-family: 'Playfair Display', serif; 
-            font-style: italic; 
-            font-size: 48px; 
-            font-weight: 600;
-            color: #2a1c40; 
-            text-align: center; 
-            margin-bottom: 0px; 
-            letter-spacing: 1px;
-            flex-shrink: 0; /* Không cho phép thu nhỏ tiêu đề */
+            font-family: 'Playfair Display', serif; font-style: italic; font-size: 48px; font-weight: 600;
+            color: #2a1c40; text-align: center; margin-bottom: 0px; letter-spacing: 1px;
+            flex-shrink: 0; /* Không bị bóp méo khi layout chật */
         }
 
         .star-divider {
@@ -93,18 +69,13 @@
         }
         .star-divider span { font-size: 20px; margin: 0 10px; position: relative; top: -1px; }
 
-        /* Khu vực nhập liệu cấu trúc phân cấp linh hoạt (Flexbox Layout) */
+        /* ---------------------------------------------------
+           KHU VỰC NHẬP CHỮ: Chỉ cuộn bên trong, không đẩy khung
+        --------------------------------------------------- */
         .input-area {
-            flex: 1; /* Chiếm toàn bộ không gian còn lại của bảng viết */
-            background: rgba(255, 255, 255, 0.6); 
-            border-radius: 20px; 
-            padding: 20px;
-            margin-bottom: 15px; 
-            margin-top: 5px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 15px;
-            min-height: 0; /* Thuộc tính cốt lõi: Ngăn chặn Flex item mở rộng vô hạn */
+            flex: 1; background: rgba(255, 255, 255, 0.6); border-radius: 20px; padding: 20px;
+            margin-bottom: 15px; margin-top: 5px; display: flex; flex-direction: column; gap: 15px;
+            min-height: 0; /* Cực kỳ quan trọng để flex con có thể cuộn được */
         }
         
         input.title-input {
@@ -114,42 +85,341 @@
         }
         input.title-input::placeholder { color: #887a9e; font-weight: normal; font-size: 16px; }
         
-        /* Trình soạn thảo văn bản: Tích hợp giới hạn khung và ngắt dòng chuỗi ký tự */
+        /* CHỖ GÕ NHẬT KÝ */
         .editor-area {
             flex: 1; 
-            background: transparent; 
-            border: none; 
-            color: #2a1c40; 
-            font-size: 17px; 
-            outline: none; 
-            overflow-y: auto; /* Kích hoạt thanh cuộn dọc bên trong trình soạn thảo */
-            line-height: 1.6; 
-            word-wrap: break-word; /* Ép buộc xuống dòng khi chạm lề khung */
-            word-break: break-word; /* Xử lý bẻ gãy các chuỗi ký tự dài không chứa khoảng trắng */
-            overflow-wrap: anywhere; /* Chuẩn mới nhất cho việc ngắt từ */
-            padding-right: 5px; /* Tạo khoảng trống tránh văn bản dính sát thanh cuộn */
+            background: transparent; border: none; color: #2a1c40; font-size: 17px; 
+            outline: none; line-height: 1.6; 
+            overflow-y: auto; /* Bật thanh cuộn ẩn bên trong */
+            word-wrap: break-word; /* Gặp lề tự động bẻ chữ xuống dòng */
+            word-break: break-word;
+            padding-right: 5px;
         }
         
         .editor-area:empty:before {
             content: attr(placeholder); color: #6a5a82; font-weight: 500; cursor: text;
         }
         
-        /* Tùy chỉnh hiển thị thanh cuộn */
-        .editor-area::-webkit-scrollbar, .reader-section::-webkit-scrollbar, .modal-content::-webkit-scrollbar { 
-            width: 5px; 
-        }
-        .editor-area::-webkit-scrollbar-thumb, .reader-section::-webkit-scrollbar-thumb, .modal-content::-webkit-scrollbar-thumb { 
-            background: #b0a3c7; 
-            border-radius: 10px; 
-        }
+        /* Trang trí thanh cuộn */
+        .editor-area::-webkit-scrollbar, .reader-section::-webkit-scrollbar, .modal-content::-webkit-scrollbar { width: 5px; }
+        .editor-area::-webkit-scrollbar-thumb, .reader-section::-webkit-scrollbar-thumb, .modal-content::-webkit-scrollbar-thumb { background: #b0a3c7; border-radius: 10px; }
 
         .editor-area img, .modal-body-content img {
             max-width: 100%; height: auto; border-radius: 12px; margin: 15px 0;
             box-shadow: 0 5px 15px rgba(0,0,0,0.15); display: block;
         }
 
-        /* Nút xác nhận lưu trữ */
+        /* ---------------------------------------------------
+           CÁC NÚT CÔNG CỤ: Chốt chặt ở đáy, không bị đẩy đi
+        --------------------------------------------------- */
         button.submit-btn {
             background: linear-gradient(to bottom, #111, #2a1c40, #111);
             color: white; border: none; border-radius: 40px; padding: 10px; width: 100%; cursor: pointer;
-            font-family
+            font-family: 'Playfair Display', serif; font-style: italic; font-size: 26px; letter-spacing: 1.5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4); transition: transform 0.2s; margin-bottom: 15px;
+            flex-shrink: 0;
+        }
+        button.submit-btn:hover { transform: scale(1.02); }
+
+        .bottom-actions {
+            display: flex; justify-content: space-around; align-items: center;
+            border: 1.5px dashed #9b8cae; border-radius: 15px; padding: 10px;
+            flex-shrink: 0;
+        }
+        .action-btn { background: transparent; border: none; cursor: pointer; transition: transform 0.2s; }
+        .action-btn:hover { transform: scale(1.1); }
+        .action-btn svg { width: 26px; height: 26px; fill: #2a1c40; }
+
+        /* ---------------------------------------------------
+           BẢNG PHẢI: Chứa danh sách nhật ký
+        --------------------------------------------------- */
+        .reader-section { flex: 1; overflow-y: auto; padding-right: 15px; display: flex; flex-direction: column; gap: 5px; }
+
+        .entry-item { width: 100%; position: relative; }
+        
+        .entry-header-row {
+            display: flex; align-items: center; gap: 20px; cursor: pointer; transition: 0.2s; padding-left: 10px;
+            justify-content: space-between;
+        }
+        .entry-header-row:hover { transform: translateX(5px); }
+        
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .planet-icon { width: 55px; height: 55px; flex-shrink: 0; }
+        .entry-date { font-size: 18px; font-weight: 600; letter-spacing: 1px; color: #4a3b69;}
+        
+        .delete-btn {
+            background: transparent; border: none; color: #d63031; font-size: 18px; cursor: pointer; 
+            font-weight: bold; padding: 10px; opacity: 0.6; transition: 0.2s;
+        }
+        .delete-btn:hover { opacity: 1; transform: scale(1.2); }
+
+        .list-divider {
+            display: flex; align-items: center; text-align: center; color: #2a1c40; margin-top: -10px; margin-bottom: 15px;
+        }
+        .list-divider::before, .list-divider::after { content: ''; flex: 1; border-bottom: 1px solid #2a1c40; }
+        .list-divider span { font-size: 16px; margin: 0 10px; position: relative; top: -1px; }
+
+        /* ---------------------------------------------------
+           MODAL: Khung đọc phóng to
+        --------------------------------------------------- */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(9, 5, 20, 0.85); z-index: 1000;
+            justify-content: center; align-items: center; backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: rgba(235, 235, 240, 0.98); width: 90%; max-width: 800px; max-height: 85vh;
+            border-radius: 20px; padding: 40px; position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); overflow-y: auto;
+            animation: zoomIn 0.3s ease;
+        }
+
+        @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .close-modal {
+            position: absolute; top: 20px; right: 25px; background: none; border: none;
+            font-size: 28px; color: #2a1c40; cursor: pointer; transition: 0.2s;
+        }
+        .close-modal:hover { transform: scale(1.2); color: #d63031; }
+        
+        .modal-title { font-family: 'Playfair Display', serif; font-size: 32px; color: #2a1c40; margin-bottom: 5px; font-weight: bold; }
+        .modal-date { font-size: 16px; color: #6a5a82; margin-bottom: 25px; font-style: italic; border-bottom: 1px dashed #b0a3c7; padding-bottom: 15px;}
+        .modal-body-content { font-size: 18px; line-height: 1.8; color: #2a1c40; word-break: break-word; }
+
+        /* ---------------------------------------------------
+           RESPONSIVE DI ĐỘNG
+        --------------------------------------------------- */
+        @media (max-width: 768px) {
+            .container { flex-direction: column; height: auto; min-height: 100vh; padding: 15px 0; }
+            .box { padding: 25px; height: auto; overflow: visible; }
+            .writer-section { flex: none; height: 80vh; display: flex; flex-direction: column; }
+            .reader-section { flex: none; min-height: 50vh; }
+            .modal-content { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+        <div class="box writer-section">
+            <h1 class="cursive-title">Dear diary</h1>
+            <div class="star-divider"><span>✦</span></div>
+
+            <div class="input-area">
+                <input type="text" id="title" class="title-input" placeholder="Tiêu đề...">
+                <div id="content" class="editor-area" contenteditable="true" placeholder="Hôm nay công chúa có tâm sự gì vậy? Kéo thả ảnh vào đây nhé..."></div>
+            </div>
+
+            <button class="submit-btn" onclick="saveDiary()" id="saveBtn">To star holder</button>
+
+            <div class="bottom-actions">
+                <button class="action-btn" onclick="document.getElementById('imgUpload').click()" title="Chèn ảnh">
+                    <svg viewBox="0 0 24 24"><path d="M21 19V5C21 3.9 20.1 3 19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19ZM8.5 13.5L11 16.51L14.5 12L19 18H5L8.5 13.5Z"/></svg>
+                </button>
+                <input type="file" id="imgUpload" style="display: none;" accept="image/*" onchange="insertImage(event)">
+
+                <button class="action-btn" onclick="backupDiary()" title="Tải file Json về máy">
+                    <svg viewBox="0 0 24 24"><path d="M19 2H8C6.9 2 6 2.9 6 4V20C6 21.1 6.9 22 8 22H20C21.1 22 22 21.1 22 20V5L19 2ZM18 20H10V16H18V20ZM16 8H10V4H16V8Z"/></svg>
+                </button>
+
+                <button class="action-btn" onclick="document.getElementById('fileInput').click()" title="Khôi phục dữ liệu">
+                    <svg viewBox="0 0 24 24"><path d="M20 6H16V4C16 2.9 15.1 2 14 2H10C8.9 2 8 2.9 8 4V6H4C2.9 6 2 6.9 2 8V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V8C22 6.9 21.1 6 20 6ZM10 4H14V6H10V4ZM20 19H4V8H20V19Z"/><rect x="10" y="11" width="4" height="2"/></svg>
+                </button>
+                <input type="file" id="fileInput" style="display: none;" accept=".json" onchange="restoreDiary(event)">
+            </div>
+        </div>
+
+        <div class="box reader-section" id="diaryList"></div>
+    </div>
+
+    <div class="modal-overlay" id="readModal" onclick="closeModalOutside(event)">
+        <div class="modal-content" id="modalBox">
+            <button class="close-modal" onclick="closeModal()">✖</button>
+            <div class="modal-title" id="modalTitle"></div>
+            <div class="modal-date" id="modalDate"></div>
+            <div class="modal-body-content" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        // Tạo sao
+        const starsContainer = document.getElementById('stars');
+        for (let i = 0; i < 150; i++) {
+            let star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + 'vw';
+            let size = Math.random() * 5 + 2 + 'px';
+            star.style.width = size; star.style.height = size;
+            star.style.animationDuration = Math.random() * 8 + 5 + 's';
+            star.style.animationDelay = Math.random() * 5 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        // SVG Quả táo
+        const planetSVG = `
+        <svg class="planet-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="50" cy="50" rx="35" ry="9" fill="none" stroke="#2a1c40" stroke-width="1" transform="rotate(-15 50 50)" />
+            <ellipse cx="50" cy="50" rx="35" ry="9" fill="none" stroke="#2a1c40" stroke-width="1" transform="rotate(15 50 50)" />
+            <circle cx="20" cy="42" r="1.5" fill="#2a1c40" />
+            <circle cx="80" cy="58" r="1.5" fill="#2a1c40" />
+            <path d="M50 65 C 35 65, 35 42, 50 38 C 65 42, 65 65, 50 65 Z" fill="#2a1c40"/>
+            <path d="M50 38 Q 52 30 55 32" fill="none" stroke="#2a1c40" stroke-width="2"/>
+        </svg>`;
+
+        // Kéo thả và chèn ảnh
+        const editor = document.getElementById('content');
+
+        function insertImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            processImage(file);
+            event.target.value = ''; 
+        }
+
+        editor.addEventListener('dragover', (e) => { e.preventDefault(); });
+        editor.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) processImage(file);
+        });
+
+        function processImage(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const div = document.createElement('div');
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                div.appendChild(img);
+                editor.focus();
+                document.execCommand('insertHTML', false, div.outerHTML + '<br>');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Logic Nhật ký
+        let entries = [];
+        try { entries = JSON.parse(localStorage.getItem('princessDiaryFinal')) || []; } 
+        catch(e) { entries = []; }
+
+        const diaryList = document.getElementById('diaryList');
+
+        function renderDiaries() {
+            diaryList.innerHTML = '';
+            [...entries].reverse().forEach((entry, index) => {
+                const realIndex = entries.length - 1 - index; 
+                const entryDiv = document.createElement('div');
+                entryDiv.className = 'entry-item';
+                
+                entryDiv.innerHTML = `
+                    <div class="entry-header-row" onclick="openModal(${realIndex})">
+                        <div class="header-left">
+                            ${planetSVG}
+                            <div class="entry-date">${entry.date}</div>
+                        </div>
+                        <button class="delete-btn" onclick="event.stopPropagation(); deleteDiary(${realIndex})" title="Xóa bỏ">✖</button>
+                    </div>
+                    <div class="list-divider"><span>✦</span></div>
+                `;
+                diaryList.appendChild(entryDiv);
+            });
+        }
+
+        function openModal(index) {
+            const pass = prompt("🔐 Cửa ải bảo mật: Nhập mật mã để đọc nhật ký nha!");
+            if (pass !== "5092") {
+                alert("❌ Sai mật mã òi! Không cho xem đâu! 🙅‍♀️");
+                return;
+            }
+            
+            const entry = entries[index];
+            document.getElementById('modalTitle').innerText = entry.title || 'Ký ức vụn vặt';
+            document.getElementById('modalDate').innerText = entry.date;
+            document.getElementById('modalBody').innerHTML = entry.content;
+            
+            document.getElementById('readModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('readModal').style.display = 'none';
+        }
+
+        function closeModalOutside(event) {
+            if (event.target === document.getElementById('readModal')) {
+                closeModal();
+            }
+        }
+
+        function saveDiary() {
+            const titleInput = document.getElementById('title');
+            const contentHTML = editor.innerHTML;
+            
+            if (!contentHTML.trim() || contentHTML === '<br>') return alert('Công chúa chưa viết gì cả! ✨');
+
+            const now = new Date();
+            const dateString = String(now.getDate()).padStart(2, '0') + '/' + 
+                               String(now.getMonth() + 1).padStart(2, '0') + '/' + 
+                               now.getFullYear();
+
+            entries.push({ title: titleInput.value, content: contentHTML, date: dateString });
+            
+            try {
+                localStorage.setItem('princessDiaryFinal', JSON.stringify(entries));
+            } catch (e) {
+                if (e.name === 'QuotaExceededError') {
+                    alert('Lưu ý: Bộ nhớ bị đầy rùi (tại nhiều ảnh quá á). Bà tải file về máy cất bớt rồi xóa bớt trong này nghen! 🥀');
+                    entries.pop(); 
+                    return;
+                }
+            }
+
+            const btn = document.getElementById('saveBtn');
+            btn.innerText = "Saved ✨";
+            setTimeout(() => btn.innerText = "To star holder", 2000);
+
+            titleInput.value = ''; editor.innerHTML = '';
+            renderDiaries();
+        }
+
+        function deleteDiary(index) {
+            if(confirm('Xóa dòng ký ức này nhé? 🥀')) {
+                entries.splice(index, 1);
+                localStorage.setItem('princessDiaryFinal', JSON.stringify(entries));
+                renderDiaries();
+            }
+        }
+
+        function backupDiary() {
+            if (entries.length === 0) return alert("Chưa có ký ức nào để tải về!");
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(entries));
+            const dl = document.createElement('a');
+            dl.setAttribute("href", dataStr);
+            dl.setAttribute("download", "nhat_ky_cong_chua.json");
+            document.body.appendChild(dl);
+            dl.click(); dl.remove();
+        }
+
+        function restoreDiary(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if (Array.isArray(importedData)) {
+                        entries = importedData;
+                        localStorage.setItem('princessDiaryFinal', JSON.stringify(entries));
+                        renderDiaries();
+                        alert("Đã khôi phục ký ức thành công! ✨");
+                    } else alert("File không đúng định dạng!");
+                } catch (error) { alert("Có lỗi xảy ra khi đọc file!"); }
+            };
+            reader.readAsText(file);
+            event.target.value = ''; 
+        }
+
+        renderDiaries();
+    </script>
+</body>
+</html>
